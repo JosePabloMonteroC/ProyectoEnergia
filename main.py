@@ -105,8 +105,7 @@ def encuentraclima():
         con.commit()
     ## inverit columnas, las de abajo van hasta arriba, fechas de la segunda columna
     ## dejar vacio folder clima para que no haga duplicados!!!!
-
-
+"""
 
 
 def descomprimir(): ## En esta funcion se descomprime el primer zip de fecha y el de cada casa2
@@ -120,7 +119,7 @@ def descomprimir(): ## En esta funcion se descomprime el primer zip de fecha y e
         zip_ref = zipfile.ZipFile(file_name)
         zip_ref.extractall() 
         zip_ref.close()
-
+"""
 def mueveclima(): ## mueve ambient-weather a la carpeta de clima y elimina el archivo para poder operar los de las casas bien.
     for file in os.listdir(data_file_folder):
             if file.startswith('ambient'):
@@ -151,12 +150,12 @@ def borra(): ##borra 1 segundo y 1 minuto
 
         
 
-descomprimir()
+
 mueveclima()
 borra()
 encuentraclima()
 encuentra_bd()
 con.close() ## cierra la conexion a la base
 """ 
-
+descomprimir()
         
