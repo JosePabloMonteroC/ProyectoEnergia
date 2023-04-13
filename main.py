@@ -15,14 +15,15 @@ from dateutil.parser import parse
 
 
 
-#con = mysql.connector.connect(
-#    host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos xampp
+con = mysql.connector.connect(
+    host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos xampp
 
 
-#cursor = con.cursor() ## Cursor de la base de datos
+cursor = con.cursor() ## Cursor de la base de datos
 
 print('en este formato AAAAMM\n')
 decompressed_folder = input('Introduce nombre de carpeta a descomprimir y subir a la BD?\n') ## clave para las funciones ya que las carpetas se llamaran como este mes
+
 
 data_file_folder = 'tiempos/'+decompressed_folder ## Folder en donde se van a encontrar los nuevos datos ya descomprimidos
 
@@ -35,7 +36,7 @@ intervalos = ['15MIN', '1H', '1DAY'] ## Identificador Intervalos
 month = data_file_folder[-2:] 
 year = data_file_folder[-6:-2]
 end = year+"-"+month+"-10 23:45:00" ##compara con mask el mes con el mes ingresado
-#date_1 = parse(end)
+date_1 = parse(end)
 
 
 #def conexion(): ## En esta Funcion se realiza y comprueba que estas conectado a la base de datos. 
@@ -44,7 +45,7 @@ end = year+"-"+month+"-10 23:45:00" ##compara con mask el mes con el mes ingresa
 #    print("Estas conectado a la base de datos")
 #conexion()
 
-"""
+
 def encuentra_bd(): ## en esta funcion se realizan los nuevos documentos, se les agrega un id al CSV y se suben a la base de datos
     for file in os.listdir(data_file_folder): ## Encuentra el archivo en la bd
      if file.endswith('.csv'): ## Encuentra archivos que terminen en .csv
@@ -85,7 +86,7 @@ def encuentra_bd(): ## en esta funcion se realizan los nuevos documentos, se les
                     df.to_csv(opc, index=False, header=False) ## Se formatea el csv para quitar headers
                     print('Hecho: '+opc)
                     print(x)
-                    qry = "LOAD DATA INFILE 'tiempos/"+decompressed_folder+"/"+opc+"' INTO TABLE "'houseteh'+n+'_'+y+" FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'" ## Query para subir datos a la bd
+                    qry = "LOAD DATA INFILE './tiempos/"+decompressed_folder+"/"+opc+"' INTO TABLE "'houseteh'+n+'_'+y+" FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'" ## Query para subir datos a la bd
                     print(qry)
                     cursor.execute(qry) ## ejecuta query 
                     con.commit()
@@ -96,30 +97,31 @@ def encuentraclima():
         filePath = folder_weather+'/'+file
         df = pd.read_csv(filePath)
         reversed_df = df.iloc[::-1]
-        climanombre = 'ambient2-'+mes+'.csv'  
-        reversed_df.to_csv('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/clima/'+climanombre,header=False,index=False)
+        climanombre = 'ambient2-'+decompressed_folder+'.csv'  
+        reversed_df.to_csv('./clima/'+climanombre,header=False,index=False)
         print('clima')
-        qry="LOAD DATA INFILE 'C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/clima/ambient2-"+decompressed_folder+".csv' INTO TABLE ambient_weather FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'"
+        qry="LOAD DATA INFILE './clima/ambient2-"+decompressed_folder+".csv' INTO TABLE ambient_weather FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'"
         print(qry)
         cursor.execute(qry) ## ejecuta query 
         con.commit()
     ## inverit columnas, las de abajo van hasta arriba, fechas de la segunda columna
     ## dejar vacio folder clima para que no haga duplicados!!!!
-"""
+
 
 
 def descomprimir(): ## En esta funcion se descomprime el primer zip de fecha y el de cada casa2
 
-    with zipfile.ZipFile('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/'+decompressed_folder+'.zip', 'r') as zip_ref: ## descomprime el zip inicial
-        zip_ref.extractall('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/tiempos')
-    for file in os.listdir('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/tiempos/'+decompressed_folder):
+    with zipfile.ZipFile('./'+decompressed_folder+'.zip', 'r') as zip_ref: ## descomprime el zip inicial
+        zip_ref.extractall('./tiempos')
+    for file in os.listdir('./tiempos/'+decompressed_folder):
       if file.endswith('.zip'):
-        os.chdir('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/tiempos/'+decompressed_folder)
-        file_name = os.path.abspath('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/tiempos/'+decompressed_folder + "/"+ file) ## descomprime el zip de cada casa
+       ## os.chdir('./tiempos/'+decompressed_folder)
+        file_name = os.path.abspath('./tiempos/'+decompressed_folder+'/'+file) ## descomprime el zip de cada casa
+        print(file_name)
         zip_ref = zipfile.ZipFile(file_name)
-        zip_ref.extractall() 
+        zip_ref.extractall('./tiempos/'+decompressed_folder) 
         zip_ref.close()
-"""
+
 def mueveclima(): ## mueve ambient-weather a la carpeta de clima y elimina el archivo para poder operar los de las casas bien.
     for file in os.listdir(data_file_folder):
             if file.startswith('ambient'):
@@ -127,18 +129,16 @@ def mueveclima(): ## mueve ambient-weather a la carpeta de clima y elimina el ar
                 df = pd.read_csv(filePath)
                 df.to_csv('ambient-'+decompressed_folder+'.csv',index=False) ##crea archivo llamado ambient + el mes de la carpeta
                 print('hecho ambient')
-                shutil.move('C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/tiempos/'+decompressed_folder+'/ambient-'+decompressed_folder+'.csv','C:/Users/pepem/Downloads/ProyectoEnergia/ProyectoEnergia/Python/clima' )
+                shutil.move('./tiempos/'+decompressed_folder+'/ambient-'+decompressed_folder+'.csv','./clima' )
                 if file.startswith('ambient'):
                     os.remove(file)
-                elif file.endswith('1SEC.csv'):
-                    os.remove(file)
-                elif file.endswith('1MIN.csv'):
-                    os.remove(file)
+                ## cualquier cosa checar programa original en esta parte
+
 def borra(): ##borra 1 segundo y 1 minuto
     for file in os.listdir(data_file_folder): ## Encuentra el archivo en la bd
         if file.endswith('1SEC.csv'):
            os.remove(file)
-        if file.endswith('1MIN.csv'):
+        elif file.endswith('1MIN.csv'):
             os.remove(file)
 
 
@@ -150,12 +150,11 @@ def borra(): ##borra 1 segundo y 1 minuto
 
         
 
-
+descomprimir()
 mueveclima()
 borra()
 encuentraclima()
 encuentra_bd()
 con.close() ## cierra la conexion a la base
-""" 
-descomprimir()
+
         
