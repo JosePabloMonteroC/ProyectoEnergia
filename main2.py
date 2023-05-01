@@ -15,8 +15,8 @@ from dateutil.parser import parse
 
 
 
-##con = mysql.connector.connect(
-   ## host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos xampp
+con = mysql.connector.connect(
+    host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos xampp
 
 
 ##cursor = con.cursor() ## Cursor de la base de datos
@@ -39,11 +39,11 @@ end = year+"-"+month+"-10 23:45:00" ##compara con mask el mes con el mes ingresa
 date_1 = parse(end)
 
 
-#def conexion(): ## En esta Funcion se realiza y comprueba que estas conectado a la base de datos. 
+def conexion(): ## En esta Funcion se realiza y comprueba que estas conectado a la base de datos. 
 
-# if con.is_connected():
-#    print("Estas conectado a la base de datos")
-#conexion()
+    if con.is_connected():
+        print("Estas conectado a la base de datos")
+    conexion()
 
 
 def encuentra_bd():
@@ -86,10 +86,10 @@ def encuentra_bd():
                         df.to_csv(new_file_path, index=False, header=False)
                         print('Hecho: ' + new_file_path)
                         print(x)
-                   ## qry = "LOAD DATA INFILE './tiempos/"+decompressed_folder+"/"+opc+"' INTO TABLE "'houseteh'+n+'_'+y+" FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'" ## Query para subir datos a la bd
-                   ## print(qry)
-                    ## cursor.execute(qry) ## ejecuta query 
-                   ## con.commit()
+                    qry = "LOAD DATA INFILE './tiempos/"+decompressed_folder+"/"+opc+"' INTO TABLE "'houseteh'+n+'_'+y+" FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'" ## Query para subir datos a la bd
+                    print(qry)
+                    cursor.execute(qry) ## ejecuta query 
+                    con.commit()
 
 def encuentraclima():
     for file in os.listdir(folder_weather): ## Encuentra el archivo en la bd
@@ -100,10 +100,10 @@ def encuentraclima():
         climanombre = 'ambient2-'+decompressed_folder+'.csv'  
         reversed_df.to_csv('./clima/'+climanombre,header=False,index=False)
         print('clima')
-        ##qry="LOAD DATA INFILE './clima/ambient2-"+decompressed_folder+".csv' INTO TABLE ambient_weather FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'"
-        ##print(qry)
-        ##cursor.execute(qry) ## ejecuta query 
-       ## con.commit()
+        qry="LOAD DATA INFILE './clima/ambient2-"+decompressed_folder+".csv' INTO TABLE ambient_weather FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n'"
+        print(qry)
+        cursor.execute(qry) ## ejecuta query 
+        con.commit()
     ## inverit columnas, las de abajo van hasta arriba, fechas de la segunda columna
     ## dejar vacio folder clima para que no haga duplicados!!!!
 
@@ -156,6 +156,6 @@ mueveclima()
 borra()
 encuentraclima()
 encuentra_bd()
-##con.close() ## cierra la conexion a la base
+con.close() ## cierra la conexion a la base
 
         
