@@ -19,7 +19,7 @@ con = mysql.connector.connect(
     host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos xampp
 
 
-##cursor = con.cursor() ## Cursor de la base de datos
+cursor = con.cursor() ## Cursor de la base de datos
 
 print('en este formato AAAAMM\n')
 decompressed_folder = input('Introduce nombre de carpeta a descomprimir y subir a la BD?\n') ## clave para las funciones ya que las carpetas se llamaran como este mes
