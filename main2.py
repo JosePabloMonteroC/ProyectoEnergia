@@ -11,19 +11,12 @@ from dateutil.parser import parse
 
 # create the connection
 con = mysql.connector.connect(**config)
-
-
-
 cursor = con.cursor() ## Cursor de la base de datos
 
 print('en este formato AAAAMM\n')
 decompressed_folder = input('Introduce nombre de carpeta a descomprimir y subir a la BD?\n') ## clave para las funciones ya que las carpetas se llamaran como este mes
-
-
 data_file_folder = './tiempos/'+decompressed_folder ## Folder en donde se van a encontrar los nuevos datos ya descomprimidos
-
 folder_weather = './clima' ## Folder en donde se van a encontrar los datos del clima
-
 casas = ['Casa1', 'Casa6', 'Casa10', 'Casa8','Casa_7'] ## Identificador casa
 intervalos = ['15MIN', '1H', '1DAY'] ## Identificador Intervalos
 
@@ -35,7 +28,6 @@ date_1 = parse(end)
 
 
 def conexion(): ## En esta Funcion se realiza y comprueba que estas conectado a la base de datos. 
-
     if con.is_connected():
         print("Estas conectado a la base de datos")
 conexion()
@@ -158,10 +150,10 @@ def borraArchivos(): ## al finalizar todo proceso, borra los archivos de la carp
 
    
 
+borraArchivos()
 descomprimir()
 mueveclima()
 borra()
 encuentraclima()
 encuentra_bd()
-borraArchivos()
 con.close() ## cierra la conexion a la base
