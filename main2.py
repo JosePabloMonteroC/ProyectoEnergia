@@ -3,27 +3,11 @@ import pandas as pd
 import mysql.connector
 import zipfile
 import shutil
+from conectionBD import config
 from dateutil.parser import parse
 
 
 ## Esta version 5.0 hace todo lo necesario para subir archivos, ahora con rutas relativas!
-
-
-
-
-##con = mysql.connector.connect(
-    ##host='localhost', user='root', password='', database='proyectoenergia') ## Conexion a la base de datos
-
-
-
-# set up the connection configuration
-config = {
-    'user': 'root',
-    'password': '',
-    'host': 'localhost',
-    'database': 'proyectoenergia',
-    'allow_local_infile': True
-}
 
 # create the connection
 con = mysql.connector.connect(**config)
